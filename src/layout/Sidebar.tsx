@@ -47,6 +47,13 @@ const menuItems = [
     color: "text-blue-500",
     bgColor: "bg-blue-50",
   },
+  {
+    text: "Subscription",
+    icon: CreditCard,
+    path: "/subscription",
+    color: "text-green-500",
+    bgColor: "bg-green-50",
+  },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
