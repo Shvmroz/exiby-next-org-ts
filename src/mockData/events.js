@@ -29,6 +29,38 @@ export const mockEvents = [
       _id: "org_1",
       name: "TechCorp Solutions",
     },
+    participating_companies: [
+      {
+        _id: "participation_1",
+        company_id: "comp_1",
+        company_name: "TechCorp Solutions",
+        booth: {
+          number: "A-10",
+          size: "4x4",
+          location: "Main Hall",
+          facilities: ["Power", "Internet", "Table", "Chairs", "Monitor"]
+        },
+        participation_fee: 3000,
+        auto_approve: false,
+        special_requirements: "Need high-speed internet for live demos",
+        status: "approved"
+      },
+      {
+        _id: "participation_2",
+        company_id: "comp_2",
+        company_name: "Innovation Labs",
+        booth: {
+          number: "B-15",
+          size: "3x3",
+          location: "Innovation Zone",
+          facilities: ["Power", "Internet", "Table", "Chairs"]
+        },
+        participation_fee: 2500,
+        auto_approve: true,
+        special_requirements: "",
+        status: "approved"
+      }
+    ],
   },
   {
     _id: "event_2",
@@ -56,6 +88,23 @@ export const mockEvents = [
       _id: "org_2",
       name: "Innovation Labs",
     },
+    participating_companies: [
+      {
+        _id: "participation_3",
+        company_id: "comp_3",
+        company_name: "Digital Marketing Pro",
+        booth: {
+          number: "Virtual-1",
+          size: "Digital",
+          location: "Virtual Expo Hall",
+          facilities: ["Virtual Booth", "Chat Support", "Video Calls"]
+        },
+        participation_fee: 1500,
+        auto_approve: true,
+        special_requirements: "Need virtual presentation setup",
+        status: "approved"
+      }
+    ],
   },
   {
     _id: "event_3",
@@ -88,5 +137,6 @@ export const mockEvents = [
       _id: "org_3",
       name: "Digital Marketing Pro",
     },
+    participating_companies: [],
   },
 ];
