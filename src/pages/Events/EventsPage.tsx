@@ -12,6 +12,7 @@ import {
   MapPin,
   Globe,
   Users,
+  Building,
 } from "lucide-react";
 import CustomTable, {
   TableHeader,
@@ -27,6 +28,7 @@ import { useSnackbar } from "notistack";
 import EventsAddEditDialog from "./components/EventsAddEditDialog";
 import EventDetailView from "./components/EventDetailView";
 import EventFilters from "./components/EventFilters";
+import ParticipatingCompaniesDialog from "./components/ParticipatingCompaniesDialog";
 import {
   _add_event_api,
   _edit_event_api,
@@ -66,6 +68,7 @@ const EventsPage: React.FC = () => {
   const [editDialog, setEditDialog] = useState(false);
   const [createDialog, setCreateDialog] = useState(false);
   const [detailView, setDetailView] = useState(false);
+  const [participatingCompaniesDialog, setParticipatingCompaniesDialog] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
@@ -117,13 +120,20 @@ const EventsPage: React.FC = () => {
       filters
     );
     if (result?.code === 200) {
-      setEvents(result.data?.events);
+      setEvents(result.data?.events as Event[]);
       setTotalCount(result.data.total_count || 0);
       setTotalPages(result.data.total_pages || 1);
-      setFiltersApplied(result.data.filters_applied || {});
+      setFiltersApplied({
+        search: "",
+        sort_by: "updatedAt",
+        sort_order: "desc",
+        page: 1,
+        limit: 50,
+        ...result.data.filters_applied,
+      });
       setLoading(false);
     } else {
-      enqueueSnackbar(result?.message || "Failed to load events", {
+      enqueueSnackbar((result as any)?.message || "Failed to load events", {
         variant: "error",
       });
       setEvents([]);
@@ -239,6 +249,11 @@ const EventsPage: React.FC = () => {
     setRowData(event);
   };
 
+  const handleParticipatingCompanies = (event: Event) => {
+    setParticipatingCompaniesDialog(true);
+    setRowData(event);
+  };
+
   const handleSearch = () => {
     setCurrentPage(1);
     getListEvents(searchQuery);
@@ -295,6 +310,11 @@ const EventsPage: React.FC = () => {
   };
 
   const MENU_OPTIONS: MenuOption[] = [
+    {
+      label: "Participating Companies",
+      action: handleParticipatingCompanies,
+      icon: <Building className="w-4 h-4" />,
+    },
     {
       label: "Edit",
       action: handleEdit,
@@ -635,6 +655,17 @@ const EventsPage: React.FC = () => {
           setPublicOnlyFilter={setPublicOnlyFilter}
         />
       </CustomDrawer>
+
+      {/* Participating Companies Dialog */}
+      <ParticipatingCompaniesDialog
+        open={participatingCompaniesDialog}
+        onClose={() => {
+          setParticipatingCompaniesDialog(false);
+          setRowData(null);
+        }}
+        eventId={rowData?._id || ""}
+        eventTitle={rowData?.title}
+      />
     </div>
   );
 };

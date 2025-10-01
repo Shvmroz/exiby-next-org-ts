@@ -10,13 +10,10 @@ import { Input } from "@/components/ui/input";
 import SearchableSelect from "@/components/ui/searchable-select";
 import StatusSwitch from "@/components/ui/status-switch";
 import { Switch } from "@/components/ui/switch";
-import { Save, X, Calendar, Building, Plus, Trash2 } from "lucide-react";
+import { Save, Calendar } from "lucide-react";
 import { _organizations_list_api } from "@/DAL/organizationAPI";
-import { _companies_list_api } from "@/DAL/companyAPI";
 import { useSnackbar } from "notistack";
 import QuillEditor from "@/components/ui/quillEditor/quillEditor";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Button from "@/components/ui/custom-button";
 
 interface EventsAddEditDialogProps {
@@ -55,19 +52,6 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
   const { enqueueSnackbar } = useSnackbar();
   const isEdit = Boolean(event);
   const [organizations, setOrganizations] = useState<Array<any>>([]);
-  const [companies, setCompanies] = useState<Array<any>>([]);
-  const [selectedCompanies, setSelectedCompanies] = useState<Array<any>>([]);
-  const [showAddCompany, setShowAddCompany] = useState(false);
-  const [selectedCompanyId, setSelectedCompanyId] = useState("");
-  const [companyDetails, setCompanyDetails] = useState({
-    booth_number: "",
-    booth_size: "3x3",
-    booth_location: "",
-    participation_fee: "",
-    facilities: [] as string[],
-    special_requirements: "",
-    auto_approve: false,
-  });
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -115,7 +99,6 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
           formData.max_attendees === "" ? 0 : Number(formData.max_attendees),
         is_public: formData.is_public,
         organization_id: formData.organization_id,
-        participating_companies: selectedCompanies,
       };
       console.log("Update Event Payload:", reqData);
       onSave(reqData);
@@ -139,7 +122,6 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
           formData.max_attendees === "" ? 0 : Number(formData.max_attendees),
         is_public: formData.is_public,
         organization_id: formData.organization_id,
-        participating_companies: selectedCompanies,
       };
       console.log("Create Event Payload:", reqData);
       onSave(reqData);
@@ -151,18 +133,10 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
     if (result?.code === 200) {
       setOrganizations(result.data.organizations || []);
     } else {
-      console.log(result?.message || "Failed to load organizations");
+      console.log((result as any)?.message || "Failed to load organizations");
     }
   };
 
-  const getCompaniesList = async () => {
-    const result = await _companies_list_api(1, 100);
-    if (result?.code === 200) {
-      setCompanies(result.data.companies || []);
-    } else {
-      console.log(result?.message || "Failed to load companies");
-    }
-  };
   // Prefill in edit mode
   useEffect(() => {
     if (event) {
@@ -193,8 +167,6 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
         is_public: event.is_public ?? true,
         organization_id: (event as any).organization_id || "", // for new events, can be set on add
       });
-      // Load existing participating companies if in edit mode
-      setSelectedCompanies(event.participating_companies || []);
     } else {
       setFormData({
         title: "",
@@ -220,17 +192,12 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
         is_public: true,
         organization_id: "", // set when adding
       });
-      setSelectedCompanies([]);
     }
   }, [event, open]);
 
   useEffect(() => {
     if (open && !event) {
       getOrgList();
-      getCompaniesList();
-    }
-    if (open && event) {
-      getCompaniesList();
     }
   }, [open]);
 
@@ -244,84 +211,6 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
     });
   };
 
-  const handleAddCompany = () => {
-    if (!selectedCompanyId) {
-      enqueueSnackbar("Please select a company", { variant: "warning" });
-      return;
-    }
-
-    const company = companies.find(c => c._id === selectedCompanyId);
-    if (!company) {
-      enqueueSnackbar("Company not found", { variant: "error" });
-      return;
-    }
-
-    // Check if company is already added
-    if (selectedCompanies.some(c => c.company_id === selectedCompanyId)) {
-      enqueueSnackbar("Company is already participating in this event", { variant: "warning" });
-      return;
-    }
-
-    const newParticipation = {
-      _id: `participation_${Date.now()}`,
-      company_id: selectedCompanyId,
-      company_name: company.orgn_user?.name || "Unknown Company",
-      booth: {
-        number: companyDetails.booth_number,
-        size: companyDetails.booth_size,
-        location: companyDetails.booth_location,
-        facilities: companyDetails.facilities,
-      },
-      participation_fee: Number(companyDetails.participation_fee) || 0,
-      auto_approve: companyDetails.auto_approve,
-      special_requirements: companyDetails.special_requirements,
-      status: companyDetails.auto_approve ? "approved" : "pending",
-    };
-
-    setSelectedCompanies(prev => [...prev, newParticipation]);
-    
-    // Reset form
-    setSelectedCompanyId("");
-    setCompanyDetails({
-      booth_number: "",
-      booth_size: "3x3",
-      booth_location: "",
-      participation_fee: "",
-      facilities: [],
-      special_requirements: "",
-      auto_approve: false,
-    });
-    setShowAddCompany(false);
-    
-    enqueueSnackbar(`${company.orgn_user?.name} added to event`, { variant: "success" });
-  };
-
-  const handleRemoveCompany = (companyId: string) => {
-    const company = selectedCompanies.find(c => c.company_id === companyId);
-    setSelectedCompanies(prev => prev.filter(c => c.company_id !== companyId));
-    enqueueSnackbar(`${company?.company_name} removed from event`, { variant: "success" });
-  };
-
-  const handleFacilityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.currentTarget.value.trim() !== "") {
-      e.preventDefault();
-      const newFacility = e.currentTarget.value.trim();
-      if (!companyDetails.facilities.includes(newFacility)) {
-        setCompanyDetails({
-          ...companyDetails,
-          facilities: [...companyDetails.facilities, newFacility],
-        });
-      }
-      e.currentTarget.value = "";
-    }
-  };
-
-  const removeFacility = (facility: string) => {
-    setCompanyDetails({
-      ...companyDetails,
-      facilities: companyDetails.facilities.filter(f => f !== facility),
-    });
-  };
   const handleBackdropClick = (event: React.MouseEvent) => {
     event.preventDefault();
     enqueueSnackbar("Use cancel button to close dialog", {
@@ -333,7 +222,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
     <CustomDialog
       open={open}
       onClose={() => onOpenChange(false)}
-      maxWidth="lg"
+      maxWidth="md"
       fullWidth
     >
       <CustomDialogTitle onClose={() => onOpenChange(false)}>
@@ -344,13 +233,11 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
       </CustomDialogTitle>
 
       <CustomDialogContent>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Event Details */}
-          <div className="space-y-6">
+        <div className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-6" id="event-form">
           {/* Event Title */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
               Event Title *
             </label>
             <Input
@@ -366,7 +253,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
           {/* Organization Select */}
           {!isEdit && (
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                 Organization *
               </label>
               <SearchableSelect
@@ -388,7 +275,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
           {/* Schedule */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                 Start Date & Time *
               </label>
               <Input
@@ -402,7 +289,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                 End Date & Time *
               </label>
               <Input
@@ -417,7 +304,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
               Registration Deadline *
             </label>
             <Input
@@ -435,7 +322,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
 
           {/* Venue Type */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
               Venue Type *
             </label>
             <SearchableSelect
@@ -453,7 +340,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                     Address
                   </label>
                   <Input
@@ -464,7 +351,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">City</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">City</label>
                   <Input
                     value={formData.venue.city}
                     onChange={(e) => updateVenue("city", e.target.value)}
@@ -473,7 +360,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                     State
                   </label>
                   <Input
@@ -485,7 +372,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                     Postal Code
                   </label>
                   <Input
@@ -496,7 +383,7 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                     Country
                   </label>
                   <Input
@@ -680,223 +567,8 @@ const EventsAddEditDialog: React.FC<EventsAddEditDialogProps> = ({
                 rows={4}
               />
             </div>
-          </div>
+            </div>
             </form>
-          </div>
-
-          {/* Right Column - Company Management */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between text-base font-medium">
-                  <div className="flex items-center">
-                    <Building className="w-4 h-4 mr-2 text-[#0077ED]" />
-                    Participating Companies ({selectedCompanies.length})
-                  </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outlined"
-                    onClick={() => setShowAddCompany(!showAddCompany)}
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add Company
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Add Company Form */}
-                {showAddCompany && (
-                  <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/30">
-                    <h4 className="font-medium text-gray-900 dark:text-white mb-3">Add Company to Event</h4>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Select Company *</label>
-                        <SearchableSelect
-                          options={companies
-                            .filter(c => !selectedCompanies.some(sc => sc.company_id === c._id))
-                            .map((company: any) => ({
-                              value: company._id,
-                              label: company.orgn_user?.name || "Unknown Company",
-                            }))}
-                          value={selectedCompanyId}
-                          onChange={setSelectedCompanyId}
-                          placeholder="Select a company"
-                          search={true}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Booth Number</label>
-                          <Input
-                            value={companyDetails.booth_number}
-                            onChange={(e) => setCompanyDetails({...companyDetails, booth_number: e.target.value})}
-                            placeholder="B-20"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Booth Size</label>
-                          <SearchableSelect
-                            options={[
-                              { value: "3x3", label: "3x3" },
-                              { value: "4x4", label: "4x4" },
-                              { value: "5x5", label: "5x5" },
-                              { value: "6x6", label: "6x6" },
-                            ]}
-                            value={companyDetails.booth_size}
-                            onChange={(value) => setCompanyDetails({...companyDetails, booth_size: value})}
-                            placeholder="Select size"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Booth Location</label>
-                          <Input
-                            value={companyDetails.booth_location}
-                            onChange={(e) => setCompanyDetails({...companyDetails, booth_location: e.target.value})}
-                            placeholder="Innovation Zone"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">Participation Fee ($)</label>
-                          <Input
-                            type="number"
-                            min="0"
-                            value={companyDetails.participation_fee}
-                            onChange={(e) => setCompanyDetails({...companyDetails, participation_fee: e.target.value})}
-                            placeholder="2000"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Facilities</label>
-                        <Input
-                          placeholder="Type facility and press Enter (e.g., Power, Internet)"
-                          onKeyDown={handleFacilityKeyDown}
-                        />
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {companyDetails.facilities.map((facility, idx) => (
-                            <Badge
-                              key={idx}
-                              variant="secondary"
-                              className="flex items-center gap-1 px-2 py-1 text-xs"
-                            >
-                              {facility}
-                              <X
-                                className="w-3 h-3 cursor-pointer text-red-500"
-                                onClick={() => removeFacility(facility)}
-                              />
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Special Requirements</label>
-                        <Input
-                          value={companyDetails.special_requirements}
-                          onChange={(e) => setCompanyDetails({...companyDetails, special_requirements: e.target.value})}
-                          placeholder="Any special requirements..."
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-600 p-2 rounded">
-                        <span className="text-sm">Auto Approve</span>
-                        <Switch
-                          checked={companyDetails.auto_approve}
-                          onCheckedChange={(checked) => setCompanyDetails({...companyDetails, auto_approve: checked})}
-                        />
-                      </div>
-
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="contained"
-                          color="primary"
-                          onClick={handleAddCompany}
-                          disabled={!selectedCompanyId}
-                        >
-                          Add Company
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outlined"
-                          onClick={() => setShowAddCompany(false)}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Selected Companies List */}
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {selectedCompanies.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                      <Building className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                      <p>No companies added yet</p>
-                      <p className="text-sm">Click "Add Company" to get started</p>
-                    </div>
-                  ) : (
-                    selectedCompanies.map((company) => (
-                      <div
-                        key={company._id}
-                        className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 dark:text-white text-sm">
-                              {company.company_name}
-                            </h4>
-                            
-                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400 mt-1">
-                              <div>Booth: {company.booth.number}</div>
-                              <div>Size: {company.booth.size}</div>
-                              <div>Location: {company.booth.location}</div>
-                              <div>Fee: ${company.participation_fee.toLocaleString()}</div>
-                            </div>
-
-                            {company.booth.facilities && company.booth.facilities.length > 0 && (
-                              <div className="mt-2">
-                                <div className="flex flex-wrap gap-1">
-                                  {company.booth.facilities.map((facility: string, idx: number) => (
-                                    <Badge
-                                      key={idx}
-                                      className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 text-xs px-1 py-0.5"
-                                    >
-                                      {facility}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="text"
-                            onClick={() => handleRemoveCompany(company.company_id)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </CustomDialogContent>
 
