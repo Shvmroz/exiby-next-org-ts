@@ -37,20 +37,20 @@ function AuthWrapper({ children }: MainLayoutProviderProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const publicRoutes = ["/login"];
+  const publicRoutes = ["/login", "/register", "/forgot-password"];
   const isPublicRoute = pathname ? publicRoutes.includes(pathname) : false;
 
 
   useEffect(() => {
     if (!loading) {
-      // If not authenticated, redirect to login
-      if (!isAuthenticated) {
+      // If not authenticated and not on public route, redirect to login
+      if (!isAuthenticated && !isPublicRoute) {
         router.replace("/login");
         return;
       }
       
-      // If authenticated and on login page, redirect to dashboard
-      if (isAuthenticated && pathname === "/login") {
+      // If authenticated and on login/register/forgot-password page, redirect to dashboard
+      if (isAuthenticated && (pathname === "/login" || pathname === "/register" || pathname === "/forgot-password")) {
         router.replace("/dashboard");
         return;
       }
@@ -61,7 +61,7 @@ function AuthWrapper({ children }: MainLayoutProviderProps) {
         return;
       }
     }
-  }, [isAuthenticated, loading, pathname, router]);
+  }, [isAuthenticated, loading, pathname, router, isPublicRoute]);
 
 
   if (loading) {
@@ -72,17 +72,22 @@ function AuthWrapper({ children }: MainLayoutProviderProps) {
     );
   }
 
-  // Show login page if not authenticated
-  if (!isAuthenticated) {
+  // Show login page if not authenticated and not on public route
+  if (!isAuthenticated && !isPublicRoute) {
     return <LoginPage />;
   }
 
   // Show main layout for authenticated users
-  return (
-    <MainLayout>
-      {children}
-    </MainLayout>
-  );
+  if (isAuthenticated) {
+    return (
+      <MainLayout>
+        {children}
+      </MainLayout>
+    );
+  }
+
+  // Show public pages for unauthenticated users
+  return <>{children}</>;
 }
 
 export default function MainLayoutProvider({ children }: MainLayoutProviderProps) {

@@ -84,11 +84,12 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
         type="button"
         onClick={() => !disabled && setOpen(!open)}
         disabled={disabled}
-        className={cn(
-          'w-full h-10 px-3 border rounded-md dark:bg-gray-700 text-left text-sm flex items-center justify-between',
-          !value ? 'text-gray-500 dark:text-gray-400' : 'dark:text-white',
-          disabled && 'opacity-50 cursor-not-allowed'
-        )}
+         className={cn(
+           'w-full h-10 px-3 border rounded-md dark:bg-gray-700 text-left text-sm flex items-center justify-between',
+           'bg-white text-black border-gray-300 dark:border-gray-600',
+           !value ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white',
+           disabled && 'opacity-50 cursor-not-allowed'
+         )}
       >
         <span>{selectedOption?.label || placeholder}</span>
         <ChevronDown className={cn('w-4 h-4 transition-transform', open && 'rotate-180')} />
@@ -125,7 +126,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                   type="button"
                   onClick={() => handleOptionClick(option.value)}
                   className={cn(
-                    'w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors',
+                    'w-full px-3 py-2 text-left text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors',
                     value === option.value && 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                   )}
                 >

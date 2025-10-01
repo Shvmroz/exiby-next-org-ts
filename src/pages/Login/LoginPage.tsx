@@ -31,162 +31,180 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12">
-        {/* Left Column - Slogan */}
-        <div className="hidden lg:flex lg:col-span-6 items-center justify-center p-8 lg:p-16">
-          <div className="max-w-lg text-center lg:text-left">
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              {/* Main Title */}
-              <span className="block bg-gradient-to-r from-[#0077ED] via-[#4A9AFF] to-[#0077ED] bg-clip-text text-transparent">
-                ExiBy
-              </span>
-
-              {/* Sub Title with | separator */}
-              <span className="block text-lg lg:text-xl font-medium mt-2 bg-gradient-to-r from-[#0077ED] via-[#4A9AFF] to-[#0077ED] bg-clip-text text-transparent">
-                Organizations | Companies
-              </span>
-            </h1>
-
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                Event Management
-              </span>
-            </h2>
-
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-              Streamline your events, connect with companies, and manage
-              attendees all in one powerful platform.
-            </p>
-          </div>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12">
+      {/* Left Column - Slogan */}
+      <div className="hidden lg:flex lg:col-span-6 items-center justify-center p-8 lg:p-16">
+        <div className="max-w-lg text-center lg:text-left">
+          <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            {/* Main Title */}
+            <span className="block bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent">
+              ExiBy
+            </span>
+  
+            {/* Sub Title with | separator */}
+            <span className="block text-lg lg:text-xl font-medium mt-2 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-clip-text text-transparent">
+              Organizations | Companies
+            </span>
+          </h1>
+  
+          <h2 className="text-3xl lg:text-4xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              Event Management
+            </span>
+          </h2>
+  
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            Streamline your events, connect with companies, and manage
+            attendees all in one powerful platform.
+          </p>
         </div>
-
-        {/* Right Column - Login Form */}
-        <div className="col-span-12 lg:col-span-6 flex items-center justify-center p-8">
-          <div className="max-w-md w-full space-y-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
-              {/* Header */}
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Welcome Back
-                </h2>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
-                  Sign in to your organization or company account
-                </p>
+      </div>
+  
+      {/* Right Column - Login Form */}
+      <div className="col-span-12 lg:col-span-6 flex items-center justify-center p-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Welcome Back
+              </h2>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Sign in to your organization or company account
+              </p>
+            </div>
+  
+            {/* Demo Credentials */}
+            <div className="mb-6 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <div className="text-center">
+                <div className="space-y-1 text-sm">
+                  <p className="text-yellow-700 dark:text-yellow-300">
+                    <span className="font-medium">Email:</span>{" "}
+                    organization@gmail.com
+                  </p>
+                  <p className="text-yellow-700 dark:text-yellow-300">
+                    <span className="font-medium">Password:</span> organization@gmail.com
+                  </p>
+                </div>
               </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                  >
-                    Email address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-3"
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                  >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full pl-10 pr-12 py-3"
-                      placeholder="Enter your password"
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  fullWidth
-                  variant="contained"
-                  color="primary"
+            </div>
+  
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
-                  {isLoading ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-2 border-t-white mr-2"></div>
-                      Signing in...
-                    </div>
-                  ) : (
-                    "Sign in"
-                  )}
-                </Button>
-              </form>
-
-              <div className="mt-6 text-center space-y-4">
-                <div>
-                  <button
-                    onClick={() => router.push("/forgot-password")}
-                    className="text-sm font-medium text-[#0077ED] hover:text-[#0066CC]"
-                  >
-                    Forgot your password?
-                  </button>
-                </div>
-                
+                  Email address
+                </label>
                 <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
                   </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                      Don't have an account?
-                    </span>
-                  </div>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-3"
+                    placeholder="Enter your email"
+                  />
                 </div>
-                
-                <div>
-                  <button
-                    onClick={() => router.push("/register")}
-                    className="text-sm font-medium text-[#0077ED] hover:text-[#0066CC]"
+              </div>
+  
+              {/* Password */}
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full pl-10 pr-12 py-3"
+                    placeholder="Enter your password"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                   >
-                    Create an account
-                  </button>
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                    )}
+                  </span>
                 </div>
+              </div>
+  
+              <Button
+                type="submit"
+                disabled={isLoading}
+                fullWidth
+                variant="contained"
+                color="primary"
+              >
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-2 border-t-white mr-2"></div>
+                    Signing in...
+                  </div>
+                ) : (
+                  "Sign in"
+                )}
+              </Button>
+            </form>
+  
+            <div className="mt-6 text-center space-y-4">
+              <div>
+                <button
+                  onClick={() => router.push("/forgot-password")}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                >
+                  Forgot your password?
+                </button>
+              </div>
+  
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
+                    Don't have an account?
+                  </span>
+                </div>
+              </div>
+  
+              <div>
+                <button
+                  onClick={() => router.push("/register")}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                >
+                  Create an account
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  
   );
 }

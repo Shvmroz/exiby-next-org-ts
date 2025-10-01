@@ -1,4 +1,4 @@
-import { invokeApi } from "../utils/invokeApi";
+// import { invokeApi } from "../utils/invokeApi";
 import { mockUsers, mockVerificationCodes, generateVerificationCode, simulateApiDelay } from "../mockData";
 
 
@@ -92,9 +92,10 @@ export const _update_admin_profile_api = async (data) => {
         code: 200,
         message: "Profile updated successfully",
         admin: {
-            first_name: data.first_name,
-            last_name: data.last_name,
-            profile_image: data.profile_image
+            profile_image: data.profile_image,
+            name: data.name,
+            bio: data.bio,
+            social_links: data.social_links
         }
     };
     

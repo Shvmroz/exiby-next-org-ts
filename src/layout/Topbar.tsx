@@ -120,7 +120,7 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
             <div className="hidden md:block text-left">
               <div className="text-sm font-medium text-gray-900 dark:text-white">
-                {user?.first_name} {user?.last_name}
+                {user?.name}
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 {user?.email}

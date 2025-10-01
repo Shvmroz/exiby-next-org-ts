@@ -14,12 +14,23 @@ import { _login_api, _logout_api } from "../DAL/authAPI";
 
 export interface User {
   _id: string;
-  first_name: string;
-  last_name: string;
   email: string;
   is_owner: boolean;
   status: boolean;
   profile_image: string;
+  name: string;
+  bio: {
+    description: string;
+    website: string;
+    industry: string;
+    founded_year: number;
+  };
+  social_links: {
+    facebook: string;
+    twitter: string;
+    linkedin: string;
+    instagram: string;
+  };
 }
 
 export interface Notification {
@@ -147,9 +158,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       const req_data = { email, password };
       const result = await _login_api(req_data);
   
-      if (result?.code === 200) {
-        localStorage.setItem("authToken", result?.token);
-        localStorage.setItem("userData", JSON.stringify(result?.admin));
+      if (result?.code === 200 && result?.admin) {
+        localStorage.setItem("authToken", result.token || "");
+        localStorage.setItem("userData", JSON.stringify(result.admin));
         setUser(result.admin);
         setIsAuthenticated(true);
   

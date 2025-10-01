@@ -1,5 +1,6 @@
-import { invokeApi } from "../utils/invokeApi";
-import { mockEvents, simulateApiDelay } from "../mockData";
+// import { invokeApi } from "../utils/invokeApi";
+import { mockEvents } from "../mockData/events";
+import { simulateApiDelay } from "../mockData/auth";
 
 export const _events_list_api = async (page, limit, search = "", filters = {}) => {
     // Mock implementation
