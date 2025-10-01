@@ -152,6 +152,37 @@ export default function LoginPage() {
                   )}
                 </Button>
               </form>
+
+              <div className="mt-6 text-center space-y-4">
+                <div>
+                  <button
+                    onClick={() => router.push("/forgot-password")}
+                    className="text-sm font-medium text-[#0077ED] hover:text-[#0066CC]"
+                  >
+                    Forgot your password?
+                  </button>
+                </div>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
+                      Don't have an account?
+                    </span>
+                  </div>
+                </div>
+                
+                <div>
+                  <button
+                    onClick={() => router.push("/register")}
+                    className="text-sm font-medium text-[#0077ED] hover:text-[#0066CC]"
+                  >
+                    Create an account
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
