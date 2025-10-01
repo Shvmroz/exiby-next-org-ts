@@ -20,13 +20,6 @@ const menuItems = [
     bgColor: "bg-blue-50",
   },
   {
-    text: "Companies",
-    icon: Building,
-    path: "/companies",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
     text: "Events",
     icon: Calendar,
     path: "/events",
@@ -34,11 +27,18 @@ const menuItems = [
     bgColor: "bg-blue-50",
   },
   {
+    text: "Companies",
+    icon: Building,
+    path: "/companies",
+    color: "text-blue-500",
+    bgColor: "bg-blue-50",
+  },
+  {
     text: "Subscription",
     icon: CreditCard,
     path: "/subscription",
-    color: "text-green-500",
-    bgColor: "bg-green-50",
+    color: "text-blue-500",
+    bgColor: "bg-blue-50",
   },
 ];
 

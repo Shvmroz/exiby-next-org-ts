@@ -1,63 +1,187 @@
-// Mock participating companies data
+// Mock participating companies data - Only approved companies
 export const mockParticipatingCompanies = [
   {
-    _id: "comp_1",
-    company_id: "64f5a2b8c9d4e5f6a7b8c9e0",
+    _id: "part_comp_1",
+    company_id: "comp_1",
     company_name: "TechCorp Solutions",
     booth: {
       number: "B-20",
       size: "4x4",
       location: "Innovation Zone",
-      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor"]
+      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor", "WiFi", "Sound System"]
     },
     participation_fee: 2000,
     auto_approve: false,
-    special_requirements: "Need additional power outlets for demo setup",
-    status: "approved"
+    special_requirements: "Need additional power outlets for demo setup and extra lighting for product showcase",
+    status: "approved",
+    contact_person: "John Smith",
+    contact_email: "john.smith@techcorp.com",
+    contact_phone: "+1-555-0123",
+    company_website: "https://techcorp-solutions.com",
+    industry: "Technology & Software",
+    company_size: "50-100 employees",
+    application_date: "2024-01-15",
+    approved_date: "2024-01-20"
   },
   {
-    _id: "comp_2",
-    company_id: "64f5a2b8c9d4e5f6a7b8c9e1",
+    _id: "part_comp_2",
+    company_id: "comp_2",
     company_name: "Innovation Labs",
     booth: {
       number: "A-15",
       size: "3x3",
       location: "Main Hall",
-      facilities: ["Power", "Internet", "Table", "Chairs"]
+      facilities: ["Power", "Internet", "Table", "Chairs", "Display Screen"]
     },
     participation_fee: 1500,
     auto_approve: true,
     special_requirements: "",
-    status: "approved"
+    status: "approved",
+    contact_person: "Sarah Johnson",
+    contact_email: "sarah.j@innovationlabs.com",
+    contact_phone: "+1-555-0456",
+    company_website: "https://innovationlabs.com",
+    industry: "Research & Development",
+    company_size: "20-50 employees",
+    application_date: "2024-01-10",
+    approved_date: "2024-01-12"
   },
   {
-    _id: "comp_3",
-    company_id: "64f5a2b8c9d4e5fda7b8c9e1",
-    company_name: "Digital Innovations",
+    _id: "part_comp_3",
+    company_id: "comp_3",
+    company_name: "Global Ventures",
     booth: {
-      number: "C-10",
+      number: "C-05",
       size: "5x5",
-      location: "Tech Pavilion",
-      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor", "AV Equipment"]
+      location: "Startup Alley",
+      facilities: ["Power", "Internet", "Projector", "Sound System", "Video Wall"]
     },
     participation_fee: 2500,
     auto_approve: false,
-    special_requirements: "Requires high-speed internet connection",
-    status: "pending"
+    special_requirements: "Extra lighting for product display and secure storage for prototypes",
+    status: "approved",
+    contact_person: "Michael Chen",
+    contact_email: "m.chen@globalventures.com",
+    contact_phone: "+1-555-0789",
+    company_website: "https://globalventures.com",
+    industry: "Venture Capital",
+    company_size: "100+ employees",
+    application_date: "2024-01-08",
+    approved_date: "2024-01-18"
   },
   {
-    _id: "comp_4",
-    company_id: "64f5a2b8cxx4e5fda7b8c9e1",
-    company_name: "Digital Innovations",
+    _id: "part_comp_4",
+    company_id: "comp_4",
+    company_name: "Digital Dynamics",
     booth: {
-      number: "C-10",
-      size: "5x5",
+      number: "D-12",
+      size: "4x4",
       location: "Tech Pavilion",
-      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor", "AV Equipment"]
+      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor", "VR Setup"]
     },
-    participation_fee: 2500,
+    participation_fee: 1800,
     auto_approve: false,
-    special_requirements: "Requires high-speed internet connection",
-    status: "approved"
+    special_requirements: "Special VR equipment setup and soundproof booth for demonstrations",
+    status: "approved",
+    contact_person: "Emma Rodriguez",
+    contact_email: "emma.r@digitaldynamics.com",
+    contact_phone: "+1-555-0321",
+    company_website: "https://digitaldynamics.com",
+    industry: "Digital Marketing",
+    company_size: "30-70 employees",
+    application_date: "2024-01-12",
+    approved_date: "2024-01-25"
+  },
+  {
+    _id: "part_comp_5",
+    company_id: "comp_5",
+    company_name: "Future Systems",
+    booth: {
+      number: "E-08",
+      size: "6x6",
+      location: "Exhibition Hall",
+      facilities: ["Power", "Internet", "Table", "Chairs", "Multiple Monitors", "Conference Setup"]
+    },
+    participation_fee: 3200,
+    auto_approve: false,
+    special_requirements: "Conference room setup for private meetings and additional security for confidential demos",
+    status: "approved",
+    contact_person: "David Kim",
+    contact_email: "d.kim@futuresystems.com",
+    contact_phone: "+1-555-0654",
+    company_website: "https://futuresystems.com",
+    industry: "Artificial Intelligence",
+    company_size: "150+ employees",
+    application_date: "2024-01-05",
+    approved_date: "2024-01-22"
+  },
+  {
+    _id: "part_comp_6",
+    company_id: "comp_6",
+    company_name: "GreenTech Innovations",
+    booth: {
+      number: "F-03",
+      size: "3x3",
+      location: "Sustainability Corner",
+      facilities: ["Power", "Internet", "Table", "Chairs", "Solar Demo Setup"]
+    },
+    participation_fee: 1200,
+    auto_approve: true,
+    special_requirements: "",
+    status: "approved",
+    contact_person: "Lisa Thompson",
+    contact_email: "lisa.t@greentech.com",
+    contact_phone: "+1-555-0987",
+    company_website: "https://greentech-innovations.com",
+    industry: "Clean Technology",
+    company_size: "15-30 employees",
+    application_date: "2024-01-18",
+    approved_date: "2024-01-20"
+  },
+  {
+    _id: "part_comp_7",
+    company_id: "comp_7",
+    company_name: "CloudTech Solutions",
+    booth: {
+      number: "G-14",
+      size: "4x4",
+      location: "Cloud Pavilion",
+      facilities: ["Power", "Internet", "Table", "Chairs", "Monitor", "Cloud Demo Setup"]
+    },
+    participation_fee: 2200,
+    auto_approve: false,
+    special_requirements: "High-speed internet connection and secure cloud infrastructure access",
+    status: "approved",
+    contact_person: "Alex Martinez",
+    contact_email: "alex.m@cloudtech.com",
+    contact_phone: "+1-555-0135",
+    company_website: "https://cloudtech-solutions.com",
+    industry: "Cloud Computing",
+    company_size: "75-120 employees",
+    application_date: "2024-01-14",
+    approved_date: "2024-01-28"
+  },
+  {
+    _id: "part_comp_8",
+    company_id: "comp_8",
+    company_name: "Blockchain Innovations",
+    booth: {
+      number: "H-07",
+      size: "5x5",
+      location: "FinTech Zone",
+      facilities: ["Power", "Internet", "Table", "Chairs", "Multiple Monitors", "Secure Terminal"]
+    },
+    participation_fee: 2800,
+    auto_approve: false,
+    special_requirements: "Secure environment for blockchain demonstrations and private key management",
+    status: "approved",
+    contact_person: "Jennifer Lee",
+    contact_email: "jennifer.l@blockchaininnovations.com",
+    contact_phone: "+1-555-0246",
+    company_website: "https://blockchain-innovations.com",
+    industry: "Blockchain & Cryptocurrency",
+    company_size: "40-80 employees",
+    application_date: "2024-01-11",
+    approved_date: "2024-01-26"
   }
 ];

@@ -29,6 +29,7 @@ import EventsAddEditDialog from "./components/EventsAddEditDialog";
 import EventDetailView from "./components/EventDetailView";
 import EventFilters from "./components/EventFilters";
 import ParticipatingCompaniesDialog from "./components/ParticipatingCompaniesDialog";
+import EventAttendeesDialog from "./components/EventAttendeesDialog";
 import {
   _add_event_api,
   _edit_event_api,
@@ -69,6 +70,7 @@ const EventsPage: React.FC = () => {
   const [createDialog, setCreateDialog] = useState(false);
   const [detailView, setDetailView] = useState(false);
   const [participatingCompaniesDialog, setParticipatingCompaniesDialog] = useState(false);
+  const [attendeesDialog, setAttendeesDialog] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
@@ -254,6 +256,11 @@ const EventsPage: React.FC = () => {
     setRowData(event);
   };
 
+  const handleAttendees = (event: Event) => {
+    setAttendeesDialog(true);
+    setRowData(event);
+  };
+
   const handleSearch = () => {
     setCurrentPage(1);
     getListEvents(searchQuery);
@@ -314,6 +321,11 @@ const EventsPage: React.FC = () => {
       label: "Participating Companies",
       action: handleParticipatingCompanies,
       icon: <Building className="w-4 h-4" />,
+    },
+    {
+      label: "Event Attendees",
+      action: handleAttendees,
+      icon: <Users className="w-4 h-4" />,
     },
     {
       label: "Edit",
@@ -661,6 +673,17 @@ const EventsPage: React.FC = () => {
         open={participatingCompaniesDialog}
         onClose={() => {
           setParticipatingCompaniesDialog(false);
+          setRowData(null);
+        }}
+        eventId={rowData?._id || ""}
+        eventTitle={rowData?.title}
+      />
+
+      {/* Event Attendees Dialog */}
+      <EventAttendeesDialog
+        open={attendeesDialog}
+        onClose={() => {
+          setAttendeesDialog(false);
           setRowData(null);
         }}
         eventId={rowData?._id || ""}

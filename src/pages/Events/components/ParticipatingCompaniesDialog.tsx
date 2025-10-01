@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Building, Plus, Trash2, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  MapPin,
+  Ruler,
+  Hash,
+  DollarSign,
+  Building,
+  Plus,
+  Trash2,
+  Search,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CustomDialog,
@@ -39,20 +48,34 @@ interface ParticipatingCompany {
   status: "approved" | "pending" | "rejected";
 }
 
-const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> = ({
-  open,
-  onClose,
-  eventId,
-  eventTitle = "Event",
-}) => {
+const ParticipatingCompaniesDialog: React.FC<
+  ParticipatingCompaniesDialogProps
+> = ({ open, onClose, eventId, eventTitle = "Event" }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [participatingCompanies, setParticipatingCompanies] = useState<ParticipatingCompany[]>(mockParticipatingCompanies as ParticipatingCompany[]);
+  const [participatingCompanies, setParticipatingCompanies] = useState<
+    ParticipatingCompany[]
+  >(mockParticipatingCompanies as ParticipatingCompany[]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [companyToDelete, setCompanyToDelete] = useState<ParticipatingCompany | null>(null);
+  const [companyToDelete, setCompanyToDelete] =
+    useState<ParticipatingCompany | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Add participant form state
+  const [newParticipant, setNewParticipant] = useState({
+    company_id: "",
+    booth_number: "",
+    booth_size: "",
+    booth_location: "",
+    facilities: [] as string[],
+    participation_fee: 0,
+    auto_approve: false,
+    special_requirements: "",
+    status: "approved" as "approved" | "pending" | "rejected",
+  });
   const [boothDetails, setBoothDetails] = useState({
     number: "",
     size: "",
@@ -60,32 +83,36 @@ const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> 
     facilities: [] as string[],
     participation_fee: 0,
     special_requirements: "",
-    auto_approve: false
+    auto_approve: false,
   });
 
   // Convert companies to selectable options
-  const companyOptions = mockCompanies.map(company => ({
+  const companyOptions = mockCompanies.map((company) => ({
     value: company._id,
-    label: company.orgn_user?.name || company._id
+    label: company.orgn_user?.name || company._id,
   }));
 
   const getCompanyStatusBadge = (status: string) => {
     const statusConfig = {
       approved: {
         label: "Approved",
-        className: "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
+        className:
+          "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
       },
       pending: {
         label: "Pending",
-        className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400",
+        className:
+          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400",
       },
       rejected: {
         label: "Rejected",
-        className: "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400",
+        className:
+          "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400",
       },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
@@ -98,20 +125,21 @@ const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> 
     const newCompany: ParticipatingCompany = {
       _id: `comp_${Date.now()}`,
       company_id: selectedCompany,
-      company_name: companyOptions.find(c => c.value === selectedCompany)?.label || "",
+      company_name:
+        companyOptions.find((c) => c.value === selectedCompany)?.label || "",
       booth: {
         number: boothDetails.number,
         size: boothDetails.size,
         location: boothDetails.location,
-        facilities: boothDetails.facilities
+        facilities: boothDetails.facilities,
       },
       participation_fee: boothDetails.participation_fee,
       auto_approve: boothDetails.auto_approve,
       special_requirements: boothDetails.special_requirements,
-      status: boothDetails.auto_approve ? "approved" : "pending"
+      status: boothDetails.auto_approve ? "approved" : "pending",
     };
 
-    setParticipatingCompanies(prev => [...prev, newCompany]);
+    setParticipatingCompanies((prev) => [...prev, newCompany]);
     setShowAddDialog(false);
     setSelectedCompany(null);
     setBoothDetails({
@@ -121,7 +149,7 @@ const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> 
       facilities: [],
       participation_fee: 0,
       special_requirements: "",
-      auto_approve: false
+      auto_approve: false,
     });
     enqueueSnackbar("Company added successfully", { variant: "success" });
   };
@@ -131,18 +159,74 @@ const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> 
     setDeleteDialog(true);
   };
 
+  const handleAddParticipant = () => {
+    setShowAddDialog(true);
+  };
+
+  const handleCancelAdd = () => {
+    setShowAddDialog(false);
+    setNewParticipant({
+      company_id: "",
+      booth_number: "",
+      booth_size: "",
+      booth_location: "",
+      facilities: [],
+      participation_fee: 0,
+      auto_approve: false,
+      special_requirements: "",
+      status: "approved",
+    });
+  };
+
+  const handleSubmitParticipant = async () => {
+    if (!newParticipant.company_id || !newParticipant.booth_number) {
+      enqueueSnackbar("Please fill in required fields", { variant: "error" });
+      return;
+    }
+
+    setLoading(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setLoading(false);
+    setShowAddDialog(false);
+
+    // Reset form
+    setNewParticipant({
+      company_id: "",
+      booth_number: "",
+      booth_size: "",
+      booth_location: "",
+      facilities: [],
+      participation_fee: 0,
+      auto_approve: false,
+      special_requirements: "",
+      status: "approved",
+    });
+
+    enqueueSnackbar("Participant added successfully", { variant: "success" });
+  };
+
+  const handleInputChange = (field: string, value: any) => {
+    setNewParticipant((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const handleConfirmDelete = () => {
     if (companyToDelete) {
-      setParticipatingCompanies(prev => 
-        prev.filter(c => c._id !== companyToDelete._id)
+      setParticipatingCompanies((prev) =>
+        prev.filter((c) => c._id !== companyToDelete._id)
       );
-      enqueueSnackbar(`${companyToDelete.company_name} removed from event`, { variant: "success" });
+      enqueueSnackbar(`${companyToDelete.company_name} removed from event`, {
+        variant: "success",
+      });
     }
     setDeleteDialog(false);
     setCompanyToDelete(null);
   };
 
-  const filteredCompanies = participatingCompanies.filter(company =>
+  const filteredCompanies = participatingCompanies.filter((company) =>
     company.company_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -153,256 +237,237 @@ const ParticipatingCompaniesDialog: React.FC<ParticipatingCompaniesDialogProps> 
         onClose={onClose}
         maxWidth="md"
         fullWidth
-        sx={{ height: '600px' }}
+        sx={{ height: "600px" }}
       >
         <CustomDialogTitle onClose={onClose}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Building className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Participating Companies
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {eventTitle}
-                </p>
-              </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <Building className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {showAddDialog
+                  ? "Add New Participant"
+                  : "Participating Companies"}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {eventTitle}
+              </p>
             </div>
           </div>
         </CustomDialogTitle>
 
         <CustomDialogContent dividers className="space-y-6">
-          {/* Header Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search companies..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+          {showAddDialog ? (
+            // ✅ Add Participant Form
+            <div className="space-y-4">
+              {/* Company Selection */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Company Selection</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <SearchableSelect
+                    options={mockCompanies.map((company) => ({
+                      value: company._id,
+                      label: company.orgn_user.name,
+                    }))}
+                    value={newParticipant.company_id}
+                    onChange={(value) => handleInputChange("company_id", value)}
+                    placeholder="Select a company"
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Booth Details */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Booth Details</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Booth Number"
+                    value={newParticipant.booth_number}
+                    onChange={(e) =>
+                      handleInputChange("booth_number", e.target.value)
+                    }
+                  />
+                  <SearchableSelect
+                    options={[
+                      { value: "3x3", label: "3x3" },
+                      { value: "4x4", label: "4x4" },
+                      { value: "5x5", label: "5x5" },
+                    ]}
+                    value={newParticipant.booth_size}
+                    onChange={(value) => handleInputChange("booth_size", value)}
+                    placeholder="Booth Size"
+                  />
+                  <Input
+                    className="md:col-span-2"
+                    placeholder="Booth Location"
+                    value={newParticipant.booth_location}
+                    onChange={(e) =>
+                      handleInputChange("booth_location", e.target.value)
+                    }
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Participation Details */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">
+                    Participation Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Input
+                    type="number"
+                    placeholder="Participation Fee ($)"
+                    value={newParticipant.participation_fee}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "participation_fee",
+                        parseInt(e.target.value) || 0
+                      )
+                    }
+                  />
+                  <SearchableSelect
+                    options={[
+                      { value: "approved", label: "Approved" },
+                      { value: "pending", label: "Pending" },
+                      { value: "rejected", label: "Rejected" },
+                    ]}
+                    value={newParticipant.status}
+                    onChange={(value) => handleInputChange("status", value)}
+                    placeholder="Select Status"
+                  />
+                  <Input
+                    placeholder="Special Requirements"
+                    value={newParticipant.special_requirements}
+                    onChange={(e) =>
+                      handleInputChange("special_requirements", e.target.value)
+                    }
+                  />
+                  <label className="flex items-center gap-2 text-xs">
+                    <input
+                      type="checkbox"
+                      checked={newParticipant.auto_approve}
+                      onChange={(e) =>
+                        handleInputChange("auto_approve", e.target.checked)
+                      }
+                    />
+                    Auto-approve this participant
+                  </label>
+                </CardContent>
+              </Card>
             </div>
-            <Button
-              onClick={() => setShowAddDialog(true)}
-              variant="contained"
-              color="primary"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Company
-            </Button>
-          </div>
+          ) : (
+            // ✅ Companies List
+            <>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    placeholder="Search companies..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 w-full"
+                  />
+                </div>
 
-          {/* Companies List */}
-          <div className="space-y-2">
-            {filteredCompanies.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <Building className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>No companies found</p>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddParticipant}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Participant
+                </Button>
               </div>
-            ) : (
-              filteredCompanies.map((company) => (
-                <Card key={company._id} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-                  <CardContent className="p-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">
-                            {company.company_name}
-                          </h4>
-                          <Button
-                            size="sm"
-                            variant="text"
-                            onClick={() => handleRemoveCompany(company)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2 flex-shrink-0"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        
-                        <div className="mb-2">
-                          {getCompanyStatusBadge(company.status)}
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
-                          <div className="flex items-center">
-                            <span className="font-medium mr-1">Booth:</span> 
-                            <span className="truncate">{company.booth.number}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-medium mr-1">Size:</span> 
-                            <span>{company.booth.size}</span>
-                          </div>
-                          <div className="flex items-center col-span-2">
-                            <span className="font-medium mr-1">Location:</span> 
-                            <span className="truncate">{company.booth.location}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="font-medium mr-1">Fee:</span> 
-                            <span>${company.participation_fee.toLocaleString()}</span>
-                          </div>
-                        </div>
 
-                        {company.booth.facilities && company.booth.facilities.length > 0 && (
-                          <div className="mt-2">
-                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Facilities:</span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {company.booth.facilities.slice(0, 4).map((facility: string, idx: number) => (
-                                <Badge
-                                  key={idx}
-                                  className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 text-xs px-1.5 py-0.5"
-                                >
-                                  {facility}
-                                </Badge>
-                              ))}
-                              {company.booth.facilities.length > 4 && (
-                                <Badge className="bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 text-xs px-1.5 py-0.5">
-                                  +{company.booth.facilities.length - 4}
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                        )}
+              <div className="space-y-2">
+                {filteredCompanies.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <Building className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>No companies found</p>
+                  </div>
+                ) : (
+                  filteredCompanies.map((company) => (
+                    <Card
+                      key={company._id}
+                      className="bg-white dark:bg-gray-800 hover:shadow-md transition-shadow"
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="text-sm font-medium">
+                              {company.company_name}
+                            </h4>
 
-                        {company.special_requirements && (
-                          <div className="mt-2">
-                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Requirements:</span>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                              {company.special_requirements}
+                            <p className="text-xs mt-1 flex items-center gap-1">
+                              <Hash className="w-3 h-3 text-gray-400" />
+                              Booth: {company.booth.number} (
+                              {company.booth.size})
+                            </p>
+
+                            <p className="text-xs flex items-center gap-1">
+                              <MapPin className="w-3 h-3 text-gray-400" />
+                              Location: {company.booth.location}
+                            </p>
+                            <p className="text-xs flex items-center gap-1">
+                              <DollarSign className="w-3 h-3 text-gray-400" />
+                              Fee: ${company.participation_fee}
                             </p>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+
+                          <div className="flex items-center gap-1">
+                            {getCompanyStatusBadge(company.status)}
+                            <Button
+                              size="sm"
+                              variant="text"
+                              onClick={() => handleRemoveCompany(company)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </CustomDialogContent>
 
         <CustomDialogActions>
-          <Button onClick={onClose} variant="outlined">
-            Close
-          </Button>
-        </CustomDialogActions>
-      </CustomDialog>
-
-      {/* Add Company Dialog */}
-      <CustomDialog
-        open={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <CustomDialogTitle onClose={() => setShowAddDialog(false)}>
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-              <Plus className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Add Company to Event
-              </h1>
-            </div>
-          </div>
-        </CustomDialogTitle>
-
-        <CustomDialogContent dividers className="space-y-4">
-          <div className="space-y-4">
-            {/* Company Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Select Company *
-              </label>
-              <SearchableSelect
-                options={companyOptions}
-                value={selectedCompany}
-                onChange={(value) => setSelectedCompany(value)}
-                placeholder="Choose a company"
-                search={true}
-              />
-            </div>
-
-            {/* Booth Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Booth Number *
-                </label>
-                <Input
-                  value={boothDetails.number}
-                  onChange={(e) => setBoothDetails(prev => ({ ...prev, number: e.target.value }))}
-                  placeholder="e.g., A-15"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Booth Size *
-                </label>
-                <Input
-                  value={boothDetails.size}
-                  onChange={(e) => setBoothDetails(prev => ({ ...prev, size: e.target.value }))}
-                  placeholder="e.g., 3x3"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Location *
-              </label>
-              <Input
-                value={boothDetails.location}
-                onChange={(e) => setBoothDetails(prev => ({ ...prev, location: e.target.value }))}
-                placeholder="e.g., Main Hall"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Participation Fee *
-              </label>
-              <Input
-                type="number"
-                value={boothDetails.participation_fee}
-                onChange={(e) => setBoothDetails(prev => ({ ...prev, participation_fee: parseInt(e.target.value) || 0 }))}
-                placeholder="0"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Special Requirements
-              </label>
-              <Input
-                value={boothDetails.special_requirements}
-                onChange={(e) => setBoothDetails(prev => ({ ...prev, special_requirements: e.target.value }))}
-                placeholder="Any special requirements..."
-              />
-            </div>
-          </div>
-        </CustomDialogContent>
-
-        <CustomDialogActions>
-          <Button 
-            onClick={() => setShowAddDialog(false)} 
-            variant="outlined"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddCompany}
-            variant="contained"
-            color="primary"
-            disabled={!selectedCompany || !boothDetails.number || !boothDetails.size || !boothDetails.location}
-          >
-            Add Company
-          </Button>
+          {showAddDialog ? (
+            <>
+              <Button variant="outlined" onClick={handleCancelAdd}>
+                Back to List
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmitParticipant}
+                disabled={
+                  loading ||
+                  !newParticipant.company_id ||
+                  !newParticipant.booth_number
+                }
+              >
+                {loading ? "Adding..." : "Add Participant"}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outlined" onClick={onClose}>
+                Close
+              </Button>
+            </>
+          )}
         </CustomDialogActions>
       </CustomDialog>
 
