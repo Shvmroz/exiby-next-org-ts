@@ -1,18 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Calendar,
-  MapPin,
-  Globe,
-  Clock,
-  Users,
-  DollarSign,
-  ExternalLink,
-  Info,
-  AlertTriangle,
-  Building,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Calendar, MapPin, Globe, Clock, Users, DollarSign, ExternalLink, Info, TriangleAlert as AlertTriangle, Building, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
