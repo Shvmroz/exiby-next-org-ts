@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import { 
-  Receipt, 
-  Download,
-  Calendar,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  CheckCircle,
-  Clock,
-  XCircle
-} from "lucide-react";
+import { Receipt, Download, Calendar, Filter, ChevronLeft, ChevronRight, FileText, CircleCheck as CheckCircle, Clock, Circle as XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

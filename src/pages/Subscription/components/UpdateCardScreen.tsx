@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import { 
-  CreditCard, 
-  Shield,
-  CheckCircle,
-  AlertTriangle,
-  Lock,
-  Calendar,
-  User
-} from "lucide-react";
+import { CreditCard, Shield, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Lock, Calendar, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Button from "@/components/ui/custom-button";

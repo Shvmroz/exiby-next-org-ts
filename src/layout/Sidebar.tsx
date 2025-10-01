@@ -3,21 +3,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-import {
-  Building2,
-  BarChart3,
-  Settings,
-  Home,
-  Building,
-  CreditCard,
-  Mail,
-  Receipt,
-  Wrench,
-  Calendar,
-  Users,
-  Network,
-  MonitorCog,
-} from "lucide-react";
+import { Building2, ChartBar as BarChart3, Settings, Chrome as Home, Building, CreditCard, Mail, Receipt, Wrench, Calendar, Users, Network, MonitorCog } from "lucide-react";
 
 interface SidebarProps {
   open: boolean;

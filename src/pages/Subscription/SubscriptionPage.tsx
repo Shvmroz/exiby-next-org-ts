@@ -1,17 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { 
-  CreditCard, 
-  Calendar, 
-  DollarSign, 
-  CheckCircle, 
-  AlertCircle,
-  ArrowUpCircle,
-  XCircle,
-  Receipt,
-  Settings
-} from "lucide-react";
+import { CreditCard, Calendar, DollarSign, CircleCheck as CheckCircle, CircleAlert as AlertCircle, CircleArrowUp as ArrowUpCircle, Circle as XCircle, Receipt, Settings } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

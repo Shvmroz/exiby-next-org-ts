@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import { 
-  XCircle, 
-  AlertTriangle,
-  CheckCircle,
-  Calendar,
-  Shield,
-  Clock
-} from "lucide-react";
+import { Circle as XCircle, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Calendar, Shield, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import Button from "@/components/ui/custom-button";

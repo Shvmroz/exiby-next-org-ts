@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import { 
-  CheckCircle, 
-  ArrowUpCircle,
-  Star,
-  Zap,
-  Shield,
-  Crown
-} from "lucide-react";
+import { CircleCheck as CheckCircle, CircleArrowUp as ArrowUpCircle, Star, Zap, Shield, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

@@ -1,14 +1,5 @@
 import React from "react";
-import { 
-  CreditCard, 
-  Calendar, 
-  DollarSign, 
-  CheckCircle, 
-  ArrowUpCircle,
-  XCircle,
-  Clock,
-  Shield
-} from "lucide-react";
+import { CreditCard, Calendar, DollarSign, CircleCheck as CheckCircle, CircleArrowUp as ArrowUpCircle, Circle as XCircle, Clock, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Button from "@/components/ui/custom-button";
