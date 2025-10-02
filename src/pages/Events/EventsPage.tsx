@@ -30,6 +30,7 @@ import EventDetailView from "./components/EventDetailView";
 import EventFilters from "./components/EventFilters";
 import ParticipatingCompaniesDialog from "./components/ParticipatingCompaniesDialog";
 import EventAttendeesDialog from "./components/EventAttendeesDialog";
+import EventCancellationDialog from "./components/EventCancellationDialog";
 import {
   _add_event_api,
   _edit_event_api,
@@ -71,9 +72,11 @@ const EventsPage: React.FC = () => {
   const [detailView, setDetailView] = useState(false);
   const [participatingCompaniesDialog, setParticipatingCompaniesDialog] = useState(false);
   const [attendeesDialog, setAttendeesDialog] = useState(false);
+  const [cancellationDialog, setCancellationDialog] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const [cancellationLoading, setCancellationLoading] = useState(false);
 
   // Filter states
   const [statusFilter, setStatusFilter] = useState("all");
@@ -261,6 +264,47 @@ const EventsPage: React.FC = () => {
     setRowData(event);
   };
 
+  const handleCancelEvent = (event: Event) => {
+    setCancellationDialog(true);
+    setRowData(event);
+  };
+
+  const handleConfirmCancellation = async (cancellationData: any) => {
+    if (!rowData?._id) return;
+
+    setCancellationLoading(true);
+    try {
+      // TODO: Replace with actual API call
+      // const result = await _cancel_event_api(rowData._id, cancellationData);
+
+      // Simulate API response
+      const result = { code: 200, message: "Event cancelled successfully" };
+
+      if (result?.code === 200) {
+        // Update event status to cancelled
+        setEvents((prev) =>
+          prev.map((event) =>
+            event._id === rowData._id ? { ...event, status: "cancelled" as any } : event
+          )
+        );
+        setCancellationDialog(false);
+        setRowData(null);
+        enqueueSnackbar("Event cancelled successfully", {
+          variant: "success",
+        });
+      } else {
+        enqueueSnackbar(result?.message || "Failed to cancel event", {
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error cancelling event:", error);
+      enqueueSnackbar("Something went wrong", { variant: "error" });
+    } finally {
+      setCancellationLoading(false);
+    }
+  };
+
   const handleSearch = () => {
     setCurrentPage(1);
     getListEvents(searchQuery);
@@ -331,6 +375,12 @@ const EventsPage: React.FC = () => {
       label: "Edit",
       action: handleEdit,
       icon: <Edit className="w-4 h-4" />,
+    },
+    {
+      label: "Cancel Event",
+      action: handleCancelEvent,
+      icon: <AlertTriangle className="w-4 h-4" />,
+      variant: "destructive",
     },
     {
       label: "Delete",
@@ -688,6 +738,18 @@ const EventsPage: React.FC = () => {
         }}
         eventId={rowData?._id || ""}
         eventTitle={rowData?.title}
+      />
+
+      {/* Event Cancellation Dialog */}
+      <EventCancellationDialog
+        open={cancellationDialog}
+        onOpenChange={(open) => {
+          setCancellationDialog(open);
+          if (!open) setRowData(null);
+        }}
+        onCancel={handleConfirmCancellation}
+        loading={cancellationLoading}
+        event={rowData}
       />
     </div>
   );
