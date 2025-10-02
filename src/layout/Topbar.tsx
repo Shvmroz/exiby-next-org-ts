@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Menu, Bell, Sun, Moon, User, LogOut, Lock } from "lucide-react";
 import NotificationsList from "@/components/notifications/NotificationsList";
 import ConfirmDeleteDialog from "@/components/ui/confirm-delete-dialog";
-import { s3baseUrl } from "@/config/config";
+// import { s3baseUrl } from "@/config/config";
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -108,7 +108,8 @@ const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
               <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-200 dark:bg-gray-700">
                 {user?.profile_image ? (
                   <img
-                    src={s3baseUrl + user.profile_image}
+                    // src={s3baseUrl + user.profile_image}
+                    src={user.profile_image}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
