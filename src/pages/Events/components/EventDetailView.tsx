@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, MapPin, Globe, Clock, Users, DollarSign, ExternalLink, Info, Building, Star, Award, Zap, CheckCircle, XCircle } from "lucide-react";
+import { Calendar, MapPin, Globe, Clock, Users, DollarSign, ExternalLink, Info, Building, Star, Award, Zap, CircleCheck as CheckCircle, Circle as XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
