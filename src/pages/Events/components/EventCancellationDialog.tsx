@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AlertTriangle, Save, X, MessageSquare, Users, DollarSign, Bell } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Save, X, MessageSquare, Users, DollarSign, Bell } from "lucide-react";
 import {
   CustomDialog,
   CustomDialogTitle,
