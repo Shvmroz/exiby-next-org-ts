@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { TriangleAlert as AlertTriangle, Save, X, MessageSquare, Users, DollarSign, Bell } from "lucide-react";
+import {
+  TriangleAlert as AlertTriangle,
+  Save,
+  X,
+  MessageSquare,
+  Users,
+  DollarSign,
+  Bell,
+} from "lucide-react";
 import {
   CustomDialog,
   CustomDialogTitle,
@@ -77,12 +85,7 @@ const EventCancellationDialog: React.FC<EventCancellationDialogProps> = ({
   const isFormValid = formData.reason && formData.cancellation_note.trim();
 
   return (
-    <CustomDialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="md"
-      fullWidth
-    >
+    <CustomDialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <CustomDialogTitle onClose={handleClose}>
         <div className="flex items-center">
           <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg mr-3">
@@ -100,41 +103,26 @@ const EventCancellationDialog: React.FC<EventCancellationDialogProps> = ({
       </CustomDialogTitle>
 
       <CustomDialogContent>
-        <form onSubmit={handleSubmit} className="space-y-6" id="cancellation-form">
-          {/* Warning Notice */}
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-            <div className="flex items-start space-x-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-              <div className="space-y-1">
-                <h4 className="font-medium text-red-900 dark:text-red-100">
-                  Important Notice
-                </h4>
-                <p className="text-sm text-red-800 dark:text-red-200">
-                  Cancelling this event will permanently change its status and cannot be undone. 
-                  All attendees will be notified if you choose to do so.
-                </p>
-              </div>
-            </div>
-          </div>
-
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6"
+          id="cancellation-form"
+        >
           {/* Cancellation Reason */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Cancellation Reason *
             </label>
-            <div className="relative">
-              <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <div className="pl-10">
-                <SearchableSelect
-                  options={cancellationReasons}
-                  value={formData.reason}
-                  onChange={(value) =>
-                    setFormData({ ...formData, reason: value })
-                  }
-                  placeholder="Select cancellation reason"
-                  search={true}
-                />
-              </div>
+            <div>
+              <SearchableSelect
+                options={cancellationReasons}
+                value={formData.reason}
+                onChange={(value) =>
+                  setFormData({ ...formData, reason: value })
+                }
+                placeholder="Select cancellation reason"
+                search={true}
+              />
             </div>
           </div>
 
@@ -153,7 +141,8 @@ const EventCancellationDialog: React.FC<EventCancellationDialogProps> = ({
               className="resize-none"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              This message will be included in attendee notifications if enabled.
+              This message will be included in attendee notifications if
+              enabled.
             </p>
           </div>
 
@@ -208,19 +197,34 @@ const EventCancellationDialog: React.FC<EventCancellationDialogProps> = ({
 
             {/* Refund Percentage */}
             {formData.process_refunds && (
-              <div className="ml-8 space-y-2">
+              <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Refund Percentage
                 </label>
                 <div className="relative">
                   <Input
                     type="number"
-                    min="0"
-                    max="100"
+                    min={1}
+                    max={100}
                     value={formData.refund_percentage}
                     onChange={(e) => {
-                      const value = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
-                      setFormData({ ...formData, refund_percentage: value });
+                      const raw = e.target.value;
+                      // Allow empty while typing
+                      if (raw === "") {
+                        setFormData({ ...formData, refund_percentage: 1 });
+                        return;
+                      }
+                      let num = Number(raw);
+                      if (num < 1) num = 1;
+                      if (num > 100) num = 100;
+                      setFormData({ ...formData, refund_percentage: num });
+                    }}
+                    onBlur={() => {
+                      // Enforce clamp on blur
+                      let num = formData.refund_percentage;
+                      if (num < 1) num = 1;
+                      if (num > 100) num = 100;
+                      setFormData({ ...formData, refund_percentage: num });
                     }}
                     placeholder="100"
                     className="pr-8"
@@ -230,33 +234,39 @@ const EventCancellationDialog: React.FC<EventCancellationDialogProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Percentage of ticket price to refund (0-100%)
+                  Percentage of ticket price to refund (1–100%)
                 </p>
               </div>
             )}
           </div>
 
           {/* Impact Summary */}
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-3 text-xs">
+            <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-1">
               Cancellation Impact
             </h4>
-            <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
+            <ul className="text-yellow-800 dark:text-yellow-200 space-y-0.5">
               <li>• Event status will be changed to "Cancelled"</li>
-              <li>• {formData.notify_attendees ? "All attendees will receive cancellation notification" : "Attendees will NOT be notified"}</li>
-              <li>• {formData.process_refunds ? `${formData.refund_percentage}% refunds will be processed automatically` : "No refunds will be processed"}</li>
-              <li>• Event will remain visible in your dashboard for record keeping</li>
+              <li>
+                •{" "}
+                {formData.notify_attendees
+                  ? "All attendees will receive cancellation notification"
+                  : "Attendees will NOT be notified"}
+              </li>
+              <li>
+                •{" "}
+                {formData.process_refunds
+                  ? `${formData.refund_percentage}% refunds will be processed automatically`
+                  : "No refunds will be processed"}
+              </li>
+              <li>• Event will remain visible in your dashboard</li>
             </ul>
           </div>
         </form>
       </CustomDialogContent>
 
       <CustomDialogActions>
-        <Button
-          variant="outlined"
-          onClick={handleClose}
-          disabled={loading}
-        >
+        <Button variant="outlined" onClick={handleClose} disabled={loading}>
           Cancel
         </Button>
         <Button

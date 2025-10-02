@@ -311,12 +311,12 @@ const CompaniesPage: React.FC = () => {
           setCompanies(result.data.companies || []);
           setTotalCount(result.data.pagination.total_count);
           setTotalPages(result.data.pagination.total_pages);
-          setFiltersApplied(result.data.filters_applied || {});
+          // setFiltersApplied(result.data.filters_applied || {});
         }
       } else {
-        enqueueSnackbar(result?.message || "Failed to load companies", {
-          variant: "error",
-        });
+        // enqueueSnackbar(result?.message || "Failed to load companies", {
+        //   variant: "error",
+        // });
         if (includeDeleted) {
           setDeletedCompanies([]);
         } else {

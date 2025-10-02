@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Calendar, Search, Filter, Plus, Download, CreditCard as Edit, Trash2, MapPin, Globe, Users, Building } from "lucide-react";
+import { Calendar, Search, Filter, Plus, Download, CreditCard as Edit, Trash2, MapPin, Globe, Users, Building, AlertTriangle } from "lucide-react";
 import CustomTable, {
   TableHeader,
   MenuOption,
@@ -368,7 +368,7 @@ const EventsPage: React.FC = () => {
       label: "Cancel Event",
       action: handleCancelEvent,
       icon: <AlertTriangle className="w-4 h-4" />,
-      variant: "destructive",
+      variant: "warning",
     },
     {
       label: "Delete",

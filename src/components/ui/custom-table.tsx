@@ -100,7 +100,7 @@ export interface MenuOption {
   label: string;
   action: (item: any) => void;
   icon?: React.ReactNode;
-  variant?: "default" | "destructive";
+  variant?: "default" | "destructive" | "warning";
 }
 
 export interface PaginationConfig {
@@ -228,6 +228,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
                                   className={
                                     option.variant === "destructive"
                                       ? "text-red-600"
+                                      : option.variant === "warning"
+                                      ? "text-amber-600 dark:text-amber-400"
                                       : ""
                                   }
                                 >
@@ -281,7 +283,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 value={rows_per_page.toString()}
                 onChange={(value) => onRowsPerPageChange(parseInt(value))}
                 className="w-20"
-                
               />
             </div>
 
